@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digi Classes - Age Eligibility Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .calculator {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 20px;
+      color: #6a1b9a;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      text-align: left;
+      font-weight: bold;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      background-color: #6a1b9a;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background-color: #4a0072;
+    }
+    #result {
+      margin-top: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <h2>Digi Classes - Age Eligibility Calculator</h2>
+    <label for="dob">Enter Date of Birth:</label>
+    <input type="date" id="dob">
+
+    <label for="class">Select Class:</label>
+    <select id="class">
+      <option value="1">Class 1</option>
+      <option value="6">Class 6</option>
+      <option value="9">Class 9</option>
+      <option value="11">Class 11</option>
+    </select>
+
+    <button onclick="checkEligibility()">Check Eligibility</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function checkEligibility() {
+      const dobInput = document.getElementById("dob").value;
+      const selectedClass = document.getElementById("class").value;
+      const resultDiv = document.getElementById("result");
+
+      if (!dobInput) {
+        resultDiv.innerText = "⚠️ Please enter Date of Birth";
+        resultDiv.style.color = "red";
+        return;
+      }
+
+      const dob = new Date(dobInput);
+      const today = new Date();
+      const nextYear = today.getFullYear() + 1;
+
+      let cutoffDate;
+      if (selectedClass === "11") {
+        cutoffDate = new Date(nextYear, 6, 1); // 1 July next year
+      } else {
+        cutoffDate = new Date(nextYear, 2, 31); // 31 March next year
+      }
+
+      let age = cutoffDate.getFullYear() - dob.getFullYear();
+      const m = cutoffDate.getMonth() - dob.getMonth();
+      if (m < 0 || (m === 0 && cutoffDate.getDate() < dob.getDate())) {
+        age--;
+      }
+
+      let eligible = false;
+      let criteria = "";
+
+      if (selectedClass === "1") {
+        eligible = age >= 6 && age <= 8;
+        criteria = "6 to 8 years (as on 31 March " + nextYear + ")";
+      } else if (selectedClass === "6") {
+        eligible = age >= 11 && age <= 13;
+        criteria = "11 to 13 years (as on 31 March " + nextYear + ")";
+      } else if (selectedClass === "9") {
+        eligible = age >= 14 && age <= 16;
+        criteria = "14 to 16 years (as on 31 March " + nextYear + ")";
+      } else if (selectedClass === "11") {
+        eligible = age <= 19;
+        criteria = "Maximum 19 years (as on 1 July " + nextYear + ")";
+      }
+
+      if (eligible) {
+        resultDiv.innerHTML = "✅ Eligible! Age on cutoff date: " + age + " years.<br>Criteria: " + criteria;
+        resultDiv.style.color = "green";
+      } else {
+        resultDiv.innerHTML = "❌ Not Eligible. Age on cutoff date: " + age + " years.<br>Criteria: " + criteria;
+        resultDiv.style.color = "red";
+      }
+    }
+  </script>
+</body>
+</html>
